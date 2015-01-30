@@ -259,6 +259,11 @@ xmlns:android="http://schemas.android.com/apk/res/android"
         <js-module src="www/wp/FileUploadOptions.js" name="FileUploadOptions1">
             <merges target="window.FileUploadOptions" />
         </js-module>
+        
+        <js-module src="www/fileSystemPaths.js" name="fileSystemPaths">
+            <merges target="cordova" />
+            <runs/>
+        </js-module>
 
     </platform>
 
