@@ -1132,6 +1132,12 @@ module.exports = {
                 );
             }
         );
+    },
+
+    requestAllPaths: function(success) {
+        success({
+            applicationDirectory: "ms-appdata:///local/"
+        });
     }
     
 
