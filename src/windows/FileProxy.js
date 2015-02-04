@@ -1136,7 +1136,7 @@ module.exports = {
 
     requestAllPaths: function(success) {
         success({
-            applicationDirectory: "ms-appdata:///"
+            applicationDirectory: "ms-appdata:///",
             dataDirectory: "ms-appdata:///local/"
         });
     }
