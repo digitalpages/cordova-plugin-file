@@ -469,8 +469,13 @@ namespace WPCordovaClassLib.Cordova.Commands
             /// </summary>
             [DataMember(Name = "exclusive")]
             public bool Exclusive { get; set; }
+        }
 
-
+        [DataContract]
+        class RequestAllPathResult
+        {
+            [DataMember]
+            public string dataDirectory { get; set; }
         }
 
         // returns null value if it fails.
@@ -579,6 +584,19 @@ namespace WPCordovaClassLib.Cordova.Commands
                 }
             }
 
+        }
+
+        public void requestAllPaths(string options)
+        {
+            string[] optStrings = getOptionStrings(options);
+            string callbackId = optStrings[0];
+
+            StorageFolder local = Windows.Storage.ApplicationData.Current.LocalFolder;
+
+            var result = new RequestAllPathResult();
+            result.dataDirectory = local.Path + "\\";
+          
+            DispatchCommandResult(new PluginResult(PluginResult.Status.OK, result), callbackId);
         }
 
         public void readAsDataURL(string options)
