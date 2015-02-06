@@ -60,6 +60,17 @@ var FileWriter = function(file) {
     this.onerror = null;        // When the write has failed (see errors).
 };
 
+
+var __arrayBufferToBase64 = function(buffer) {
+    var binary = '';
+    var bytes = new Uint8Array(buffer);
+    var len = bytes.byteLength;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+    }
+    return window.btoa(binary);
+}
+
 // States
 FileWriter.INIT = 0;
 FileWriter.WRITING = 1;
@@ -120,8 +131,8 @@ FileWriter.prototype.write = function(data) {
     // Mark data type for safer transport over the binary bridge
     isBinary = supportsBinary && (data instanceof ArrayBuffer);
     if (isBinary && cordova.platformId === "windowsphone") {
-        // create a plain array, using the keys from the Uint8Array view so that we can serialize it
-        data = Array.apply(null, new Uint8Array(data));
+        // create a base64 from array buffer, to avoid big arrays on windowsphone
+        data = __arrayBufferToBase64(data);
     }
     
     // Throw an exception if we are already writing a file

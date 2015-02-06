@@ -829,8 +829,24 @@ namespace WPCordovaClassLib.Cordova.Commands
                     return;
                 }
 
-                char[] dataToWrite = isBinary ? JSON.JsonHelper.Deserialize<char[]>(data) :
-                    data.ToCharArray();
+
+                byte[] dataToWrite;
+                try
+                {
+                    dataToWrite = System.Convert.FromBase64String(data);
+                }
+                catch (System.ArgumentNullException)
+                {
+                    Debug.WriteLine("Base 64 string is null.", filePath);
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR), callbackId);
+                    return;
+                }
+                catch (System.FormatException)
+                {
+                    Debug.WriteLine("Base 64 string length is not 4 or is not an even multiple of 4.", filePath);
+                    DispatchCommandResult(new PluginResult(PluginResult.Status.ERROR), callbackId);
+                    return;
+                }
 
                 using (IsolatedStorageFile isoFile = IsolatedStorageFile.GetUserStoreForApplication())
                 {
