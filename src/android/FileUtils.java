@@ -65,9 +65,9 @@ public class FileUtils extends CordovaPlugin {
     public static int QUOTA_EXCEEDED_ERR = 10;
     public static int TYPE_MISMATCH_ERR = 11;
     public static int PATH_EXISTS_ERR = 12;
-    
+
     public static int UNKNOWN_ERR = 1000;
-    
+
     private boolean configured = false;
 
     // This field exists only to support getEntry, below, which has been deprecated
@@ -76,7 +76,7 @@ public class FileUtils extends CordovaPlugin {
     private interface FileOp {
         void run(  ) throws Exception;
     }
-    
+
     private ArrayList<Filesystem> filesystems;
 
     public void registerFilesystem(Filesystem fs) {
@@ -84,7 +84,7 @@ public class FileUtils extends CordovaPlugin {
     		this.filesystems.add(fs);
     	}
     }
-    
+
     private Filesystem filesystemForName(String name) {
     	for (Filesystem fs:filesystems) {
     		if (fs != null && fs.name != null && fs.name.equals(name)) {
@@ -123,7 +123,7 @@ public class FileUtils extends CordovaPlugin {
             }
         }
     }
-    
+
     protected HashMap<String, String> getAvailableFileSystems(Activity activity) {
         Context context = activity.getApplicationContext();
         HashMap<String, String> availableFileSystems = new HashMap<String,String>();
@@ -156,7 +156,7 @@ public class FileUtils extends CordovaPlugin {
 
     	Activity activity = cordova.getActivity();
     	String packageName = activity.getPackageName();
-    	
+
     	String location = activity.getIntent().getStringExtra("androidpersistentfilelocation");
     	if (location == null) {
     		location = "compatibility";
@@ -174,7 +174,7 @@ public class FileUtils extends CordovaPlugin {
     		 *  versions.
     		 */
     		if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-    			persistentRoot = Environment.getExternalStorageDirectory().getAbsolutePath();
+    			persistentRoot = Environment.getExternalStorageDirectory().getAbsolutePath() + "/." + packageName + "/data";
     			tempRoot = Environment.getExternalStorageDirectory().getAbsolutePath() +
     					"/Android/data/" + packageName + "/cache/";
     		} else {
@@ -207,7 +207,7 @@ public class FileUtils extends CordovaPlugin {
     		activity.finish();
     	}
     }
-    
+
     public static FileUtils getFilePlugin() {
 		return filePlugin;
 	}
@@ -216,7 +216,7 @@ public class FileUtils extends CordovaPlugin {
     	if (localURL == null) return null;
     	return filesystemForName(localURL.filesystemName);
     }
-    
+
     @Override
     public Uri remapUri(Uri uri) {
         // Remap only cdvfile: URLs (not content:).
@@ -596,7 +596,7 @@ public class FileUtils extends CordovaPlugin {
     	if (url == null) {
     		throw new MalformedURLException("Unrecognized filesystem URL");
     	}
-    	
+
 		/* Backwards-compatibility: Check for file:// urls */
         if (url.startsWith("file:/")) {
             if (!url.startsWith("file://")) {
@@ -633,8 +633,8 @@ public class FileUtils extends CordovaPlugin {
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
-    }   
-    
+    }
+
     /**
      * Read the list of files from this directory.
      *
@@ -642,7 +642,7 @@ public class FileUtils extends CordovaPlugin {
      * @return a JSONArray containing JSONObjects that represent Entry objects.
      * @throws FileNotFoundException if the directory is not found.
      * @throws JSONException
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     private JSONArray readEntries(String baseURLstr) throws FileNotFoundException, JSONException, MalformedURLException {
         try {
@@ -652,7 +652,7 @@ public class FileUtils extends CordovaPlugin {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
         	return fs.readEntriesAtLocalURL(inputURL);
-        
+
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
@@ -702,8 +702,8 @@ public class FileUtils extends CordovaPlugin {
      * @param filePath the directory to be removed
      * @return a boolean representing success of failure
      * @throws FileExistsException
-     * @throws NoModificationAllowedException 
-     * @throws MalformedURLException 
+     * @throws NoModificationAllowedException
+     * @throws MalformedURLException
      */
     private boolean removeRecursively(String baseURLstr) throws FileExistsException, NoModificationAllowedException, MalformedURLException {
         try {
@@ -718,7 +718,7 @@ public class FileUtils extends CordovaPlugin {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
         	return fs.recursiveRemoveFileAtLocalURL(inputURL);
-        
+
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
@@ -733,7 +733,7 @@ public class FileUtils extends CordovaPlugin {
      * @return a boolean representing success of failure
      * @throws NoModificationAllowedException
      * @throws InvalidModificationException
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     private boolean remove(String baseURLstr) throws NoModificationAllowedException, InvalidModificationException, MalformedURLException {
         try {
@@ -749,7 +749,7 @@ public class FileUtils extends CordovaPlugin {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
         	return fs.removeFileAtLocalURL(inputURL);
-        
+
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
@@ -777,7 +777,7 @@ public class FileUtils extends CordovaPlugin {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
         	return fs.getFileForLocalURL(inputURL, path, options, directory);
-        
+
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
@@ -791,7 +791,7 @@ public class FileUtils extends CordovaPlugin {
      * @param filePath
      * @return
      * @throws JSONException
-     * @throws IOException 
+     * @throws IOException
      */
     private JSONObject getParent(String baseURLstr) throws JSONException, IOException {
         try {
@@ -801,7 +801,7 @@ public class FileUtils extends CordovaPlugin {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
         	return fs.getParentForLocalURL(inputURL);
-        
+
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
@@ -814,7 +814,7 @@ public class FileUtils extends CordovaPlugin {
      * @return returns a JSONObject represent a W3C File object
      * @throws FileNotFoundException
      * @throws JSONException
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     private JSONObject getFileMetadata(String baseURLstr) throws FileNotFoundException, JSONException, MalformedURLException {
         try {
@@ -824,7 +824,7 @@ public class FileUtils extends CordovaPlugin {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
         	return fs.getFileMetadataForLocalURL(inputURL);
-        
+
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
@@ -847,7 +847,7 @@ public class FileUtils extends CordovaPlugin {
         	// Pass null through
         }
         if (rootFs == null) {
-            throw new IOException("No filesystem of type requested");        	
+            throw new IOException("No filesystem of type requested");
         }
         fs.put("name", rootFs.name);
         fs.put("root", rootFs.getRootEntry());
@@ -874,7 +874,7 @@ public class FileUtils extends CordovaPlugin {
     private static String toDirUrl(File f) {
         return Uri.fromFile(f).toString() + '/';
     }
-    
+
     private JSONObject requestAllPaths() throws JSONException {
         Context context = cordova.getActivity();
         JSONObject ret = new JSONObject();
@@ -883,11 +883,13 @@ public class FileUtils extends CordovaPlugin {
         ret.put("dataDirectory", toDirUrl(context.getFilesDir()));
         ret.put("cacheDirectory", toDirUrl(context.getCacheDir()));
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+          String root = toDirUrl(Environment.getExternalStorageDirectory());
+          String packageName = context.getPackageName();
           try {
-            ret.put("externalApplicationStorageDirectory", toDirUrl(context.getExternalFilesDir(null).getParentFile()));
-            ret.put("externalDataDirectory", toDirUrl(context.getExternalFilesDir(null)));
+            ret.put("externalApplicationStorageDirectory", root + "." + packageName + "/");
+            ret.put("externalDataDirectory",  root + "." + packageName + "/data/");
             ret.put("externalCacheDirectory", toDirUrl(context.getExternalCacheDir()));
-            ret.put("externalRootDirectory", toDirUrl(Environment.getExternalStorageDirectory()));
+            ret.put("externalRootDirectory", root);
           }
           catch(NullPointerException e) {
             /* If external storage is unavailable, context.getExternal* returns null */
@@ -946,7 +948,7 @@ public class FileUtils extends CordovaPlugin {
      * @param encoding          The encoding to return contents as.  Typical value is UTF-8. (see http://www.iana.org/assignments/character-sets)
      * @param resultType        The desired type of data to send to the callback.
      * @return                  Contents of file.
-     * @throws MalformedURLException 
+     * @throws MalformedURLException
      */
     public void readFileAs(final String srcURLstr, final int start, final int end, final CallbackContext callbackContext, final String encoding, final int resultType) throws MalformedURLException {
         try {
@@ -955,23 +957,23 @@ public class FileUtils extends CordovaPlugin {
         	if (fs == null) {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
-        
+
             fs.readFileAtURL(inputURL, start, end, new Filesystem.ReadFileCallback() {
                 public void handleData(InputStream inputStream, String contentType) {
             		try {
                         ByteArrayOutputStream os = new ByteArrayOutputStream();
                         final int BUFFER_SIZE = 8192;
                         byte[] buffer = new byte[BUFFER_SIZE];
-                        
+
                         for (;;) {
                             int bytesRead = inputStream.read(buffer, 0, BUFFER_SIZE);
-                            
+
                             if (bytesRead <= 0) {
                                 break;
                             }
                             os.write(buffer, 0, bytesRead);
                         }
-                                
+
             			PluginResult result;
             			switch (resultType) {
             			case PluginResult.MESSAGE_TYPE_STRING:
@@ -1027,12 +1029,12 @@ public class FileUtils extends CordovaPlugin {
         	if (fs == null) {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
-        
+
             long x = fs.writeToFileAtURL(inputURL, data, offset, isBinary); Log.d("TEST",srcURLstr + ": "+x); return x;
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
         }
-        
+
     }
 
     /**
@@ -1050,7 +1052,7 @@ public class FileUtils extends CordovaPlugin {
         	if (fs == null) {
         		throw new MalformedURLException("No installed handlers for this URL");
         	}
-        
+
             return fs.truncateFileAtURL(inputURL, size);
         } catch (IllegalArgumentException e) {
         	throw new MalformedURLException("Unrecognized filesystem URL");
